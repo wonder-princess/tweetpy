@@ -7,7 +7,7 @@ csv_file = open("apps/inputcsv/userlist.csv", "r", encoding="utf-8", errors="", 
 # header = next(f)
 # print(header)
 
-def printdata():
+def input_user_list():
     list = []
     for i, row in enumerate(csv_file):
         if i == 0:
