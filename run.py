@@ -1,6 +1,6 @@
 import time
 
-from apps.config import (Keys, SearchFilter, check_user_id,
+from apps.config import (Keys, Keys_alt, SearchFilter, check_user_id,
                          check_user_screen_name, connect_twetter)
 from apps.fav_tweet import (favorite_tweet, get_follower_ids, get_user_tweet,
                             is_retweet)
@@ -17,7 +17,7 @@ print("run app")
 # print("★☆★自分のツイート☆★☆")
 # get_user_timelines()
 
-send_dm()
+# send_dm()
 
 # post_tweet()
 

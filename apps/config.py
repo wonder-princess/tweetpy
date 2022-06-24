@@ -2,11 +2,16 @@ import tweepy
 
 
 class Keys:
-
     CONSUMER_KEY = "d6Z4EUpqAP2oYUHUcPSaoCifN"
     CONSUMER_SECRET = "knReUEAfGGR0fcjmnP491Y6bosp8u75xaI0Oj5ujVmWYcEU5A9"
     ACCESS_TOKEN = "779662566029037568-PhOIFSZdZAdccwkLHeyeTGMhIivVVJY"
     ACCESS_TOKEN_SECRET = "CYXFzppZQhbKg2nujIWTpIwAw3PnuAApYy4sq1geKF2fu"
+
+class Keys_alt:
+    CONSUMER_KEY = ""
+    CONSUMER_SECRET = ""
+    ACCESS_TOKEN = ""
+    ACCESS_TOKEN_SECRET = ""
 
 class SearchFilter:
     SEARCH_USER = "sekai_in_wonder"
@@ -25,3 +30,4 @@ def check_user_id(screen_name):
 def check_user_screen_name(user_id):
     screen_name = connect_twetter().get_user(user_id=user_id).screen_name
     return screen_name
+
