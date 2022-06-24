@@ -3,7 +3,7 @@ import time
 import tweepy
 
 from apps.config import Keys, SearchFilter, connect_twetter
-from apps.inputcsv import input_user_list
+from apps.input_file import input_txt, input_user_list
 
 api = connect_twetter()
 
@@ -22,7 +22,7 @@ def check_user_id(screen_name):
     return user_id
 
 def send_dm():
-    message = "Hello, World!"
+    message = input_txt()
     list = input_user_list()
     for user in list:
         recipient_id = check_user_id(user)

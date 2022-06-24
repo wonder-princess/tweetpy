@@ -1,6 +1,10 @@
 # import csv
+import glob
+import os
+import pathlib
 
-csv_file = open("apps/inputcsv/userlist.csv", "r", encoding="utf-8", errors="", newline="" )
+import cv2
+
 #リスト形式
 
 # f = csv.reader(csv_file , delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
@@ -8,6 +12,7 @@ csv_file = open("apps/inputcsv/userlist.csv", "r", encoding="utf-8", errors="", 
 # print(header)
 
 def input_user_list():
+    csv_file = open("apps/input/userlist.csv", "r", encoding="utf-8", errors="", newline="" )
     list = []
     for i, row in enumerate(csv_file):
         if i == 0:
@@ -16,3 +21,13 @@ def input_user_list():
         #row[0]で必要な項目を取得することができる
         list.append(row)
     return list
+
+def input_img():
+    strImgDirPath = "apps/input"
+    strImgFileName = "*" + ".[pj][np][g]"
+    image_list = glob.glob(os.path.join(strImgDirPath, strImgFileName))
+    return image_list
+
+def input_txt():
+    f = open('apps/input/message.txt', 'r', encoding="utf-8")
+    return f.read()
