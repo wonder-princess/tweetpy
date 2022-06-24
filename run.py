@@ -17,13 +17,13 @@ print("run app")
 # print("★☆★自分のツイート☆★☆")
 # get_user_timelines()
 
-# send_dm()
+send_dm()
 
 # post_tweet()
 
 # is_empty()
 
-favorite_tweet()
+# favorite_tweet()
 
 # tweet = get_user_tweet(check_user_id("ebikoring"))
 # print(is_retweet(tweet))
