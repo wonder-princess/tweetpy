@@ -12,7 +12,6 @@ class SearchFilter:
     SEARCH_USER = "sekai_in_wonder"
     SEARCH_WORD = ""
 
-
 def connect_twetter():
     auth = tweepy.OAuthHandler(Keys.CONSUMER_KEY, Keys.CONSUMER_SECRET)
     auth.set_access_token(Keys.ACCESS_TOKEN, Keys.ACCESS_TOKEN_SECRET)
