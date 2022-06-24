@@ -23,8 +23,8 @@ def check_user_id(screen_name):
 
 def send_dm():
     message = input_txt()
-    list = input_user_list()
-    for user in list:
+    itr = input_user_list()
+    for user in itr:
         recipient_id = check_user_id(user)
         # time.sleep(1)
         api.send_direct_message(recipient_id=recipient_id, text=message)
