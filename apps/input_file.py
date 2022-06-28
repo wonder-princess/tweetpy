@@ -1,15 +1,6 @@
-# import csv
 import glob
 import os
-import pathlib
 
-import cv2
-
-#リスト形式
-
-# f = csv.reader(csv_file , delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
-# header = next(f)
-# print(header)
 
 def input_user_list():
     csv_file = open("apps/input/userlist.csv", "r", encoding="utf-8", errors="", newline="" )
