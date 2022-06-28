@@ -1,10 +1,12 @@
 
-from apps.apps import favorite_tweet, post_tweet, send_dm
-from apps.config import connect_twetter
+from apps.apps import (favorite_tweet, post_tweet, reply_goodmorning, send_dm,
+                       test_reply)
 
 print("run app")
 
 # send_dm()
-favorite_tweet()
+# favorite_tweet()
 # post_tweet()
+reply_goodmorning()
 
+# test_reply()

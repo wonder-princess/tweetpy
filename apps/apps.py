@@ -1,6 +1,11 @@
+import random
+import re
 import time
+from datetime import timedelta
+from itertools import count
 
 import tweepy
+from torch import t
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
                            is_ng_word, is_retweet)
@@ -56,3 +61,40 @@ def favorite_tweet():
             print("fav:False")
 
         print("-"*30)
+
+def ohayou():
+    n = random.randint(1,5)
+    if n == 1:
+        return "おっはー"
+    elif n == 2:
+        return "aaaaa"
+    elif n == 3:
+        return "bbbb"
+    elif n == 4:
+        return "cccc"
+    else:
+        return "は？きも"
+
+def reply_goodmorning():
+    timeline = api.user_timeline(user_id=check_user_id("sekai_princess"))
+    # timeline = api.list_timeline(list_id=1527775551108567041, count=5000, include_rts=False)
+
+    goodmorning_tweets = []
+    for tweet in timeline:
+        if re.match(r'.*おはよう*', tweet.text) and is_mention(tweet) and  is_ng_word(tweet):
+            goodmorning_tweets.append(tweet)
+    
+    for tweet in goodmorning_tweets:
+        print("ユーザ名:\n", tweet.user.name)
+        print("ツイート本文:\n", tweet.text)
+        print("ツイートした時間:\n", tweet.created_at + timedelta(hours=+9))
+        print("ツイートID:\n", tweet.id)
+        print('*'*30)
+
+        reply_text = "@"+str(tweet.user.screen_name) +"\n"+ ohayou()
+        api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
+
+def test_reply():
+    tweet = api.user_timeline(user_id=check_user_id("sekai_princess"))[0]
+    reply_text = "@"+str(tweet.user.screen_name) +"\n"+ input_txt()
+    api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
