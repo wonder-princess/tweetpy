@@ -5,7 +5,6 @@ from datetime import timedelta
 from itertools import count
 
 import tweepy
-from torch import t
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
                            is_ng_word, is_retweet)
