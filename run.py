@@ -4,6 +4,6 @@ from apps.apps import (favorite_tweet, post_tweet, reply_goodmorning, send_dm,
 print("run app")
 
 # send_dm()
-# favorite_tweet()
+favorite_tweet()
 # post_tweet()
 # reply_goodmorning()

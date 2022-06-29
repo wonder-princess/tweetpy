@@ -16,6 +16,9 @@ class Keys:
 class CallbackURL:
     CALLBACK_URL = config_ini.get('CALLBACK_URL', 'CALLBACK_URL')
 
+class UserList:
+    USER_LIST = config_ini.get('USER_LIST', 'USER_LIST')
+
 def connect_twetter():
     auth = tweepy.OAuthHandler(Keys.CONSUMER_KEY, Keys.CONSUMER_SECRET)
     auth.set_access_token(Keys.ACCESS_TOKEN, Keys.ACCESS_TOKEN_SECRET)
