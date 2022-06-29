@@ -1,9 +1,10 @@
+from apps.config import CallbackURL, Keys
 from requests_oauthlib import OAuth1Session
 
-API_KEY = "d6Z4EUpqAP2oYUHUcPSaoCifN"
-API_KEY_SECRET = "knReUEAfGGR0fcjmnP491Y6bosp8u75xaI0Oj5ujVmWYcEU5A9"
+API_KEY = Keys.CONSUMER_KEY
+API_KEY_SECRET = Keys.CONSUMER_SECRET
 
-callback_url = "https://twitter.com/sekai_in_wonder"
+callback_url = CallbackURL.CALLBACK_URL
 request_endpoint_url = "https://api.twitter.com/oauth/request_token"
 authenticate_url = "https://api.twitter.com/oauth/authenticate"
 

@@ -1,2 +1,3 @@
-/apps/input/*
-/apps/config.ini
+# /apps/input/*
+# /apps/config.ini
+/ignore

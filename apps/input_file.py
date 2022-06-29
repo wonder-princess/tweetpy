@@ -14,7 +14,7 @@ def input_user_list():
     return list
 
 def input_img():
-    strImgDirPath = "apps/input"
+    strImgDirPath = "apps/input/post_img"
     strImgFileName = "*" + ".[pj][np][g]"
     image_list = glob.glob(os.path.join(strImgDirPath, strImgFileName))
     return image_list

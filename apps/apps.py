@@ -4,8 +4,6 @@ import time
 from datetime import timedelta
 from itertools import count
 
-import tweepy
-
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
                            is_ng_word, is_retweet)
 from apps.config import connect_twetter
