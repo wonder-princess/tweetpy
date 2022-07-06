@@ -1,7 +1,7 @@
 from apps.apps import (favorite_tweet, post_tweet, reply_goodmorning, send_dm,
                        test_reply)
+from apps.checkers import check_user_id
 
-if __name__ == '__main__'
 
 print("run app")
 

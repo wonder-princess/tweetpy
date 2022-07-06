@@ -1,5 +1,6 @@
 ignore
 
+apps/__pycache__
 apps/input/message.txt
 apps/input/userlist.csv
 apps/input/post_img

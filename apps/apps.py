@@ -2,7 +2,6 @@ import random
 import re
 import time
 from datetime import timedelta
-from itertools import count
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
                            is_ng_word, is_retweet)
@@ -33,26 +32,27 @@ def send_dm():
         api.send_direct_message(recipient_id=recipient_id, text=message)
 
 def favorite_tweet():
-    itr = api.list_timeline(list_id=UserList.USER_LIST, count=500, include_entities=False, include_rts=False)
+    itr = api.get_list_members(list_id=UserList.USER_LIST, count=30)
     fav_count = 0
-    for user_id in itr:
-        tweet = api.user_timeline(user_id=user_id)[0]
-        print("user:", tweet.user.name)
-        print("text:\n", tweet.text)
-        print("time:", tweet.created_at + timedelta(hours=+9))
-        print("id:", tweet.id)
-        print("-"*30)
-        
-        if is_mention(tweet) and is_ng_word(tweet):
-            fav_count =+ 1
-            print("fav:True")
-            print("count:", fav_count)
-            # api.create_favorite(tweet.id)
-            # time.sleep(1)
-            if fav_count > 50:
-                break
-        else:
-            print("fav:False")
+    for itr_ in itr, :
+        for user in itr_:
+            tweet = api.user_timeline(user_id=user.id, count=1)[0]
+            print("user:", tweet.user.name)
+            print("text:\n", tweet.text)
+            print("time:", tweet.created_at + timedelta(hours=+9))
+            print("id:", tweet.id)
+            if is_mention(tweet) and is_ng_word(tweet):
+                fav_count += 1
+                print("fav:True")
+                print("count:", fav_count)
+                api.create_favorite(tweet.id)
+                time.sleep(1)
+                if fav_count > 50:
+                    break
+            else:
+                print("fav:False")
+            print("-"*30)
+
 
 def ohayou():
     n = random.randint(1,5)
