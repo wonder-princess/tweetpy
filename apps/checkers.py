@@ -25,7 +25,7 @@ def is_retweet(tweet):
         return True
 
 def is_ng_word(tweet):
-    if re.match(r'.*質問|募|集.*', tweet.text):
+    if re.match(r'.*質問|募|集|プレゼント|販売|企画|動画|オリパ.*', tweet.text):
         return False
     else:
         return True

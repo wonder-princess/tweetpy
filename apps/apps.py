@@ -32,16 +32,16 @@ def send_dm():
         api.send_direct_message(recipient_id=recipient_id, text=message)
 
 def favorite_tweet():
-    itr = api.get_list_members(list_id=UserList.USER_LIST, count=30)
+    itr = api.get_list_members(list_id=UserList.USER_LIST, count=500)
     fav_count = 0
     for itr_ in itr, :
         for user in itr_:
-            tweet = api.user_timeline(user_id=user.id, count=1)[0]
+            tweet = api.user_timeline(user_id=user.id, count=1, include_rts=False)[0]
             print("user:", tweet.user.name)
             print("text:\n", tweet.text)
             print("time:", tweet.created_at + timedelta(hours=+9))
             print("id:", tweet.id)
-            if is_mention(tweet) and is_ng_word(tweet):
+            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
                 fav_count += 1
                 print("fav:True")
                 print("count:", fav_count)
@@ -52,7 +52,6 @@ def favorite_tweet():
             else:
                 print("fav:False")
             print("-"*30)
-
 
 def ohayou():
     n = random.randint(1,5)
@@ -91,3 +90,30 @@ def test_reply():
     tweet = api.user_timeline(user_id=check_user_id("sekai_princess"))[0]
     reply_text = "@"+str(tweet.user.screen_name) +"\n"+ input_txt()
     api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
+
+def favorite_resume():
+    itr = api.search_tweets(q="#ポケカ履歴書", result_type="mixed", count=100)
+    fav_count = 0
+    for tweet in itr:
+        print("user:", tweet.user.name)
+        print("text:\n", tweet.text)
+        print("time:", tweet.created_at + timedelta(hours=+9))
+        print("id:", tweet.id)
+        try:
+            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+                fav_count += 1
+                print("fav:True")
+                print("count:", fav_count)
+                api.create_favorite(tweet.id)
+                time.sleep(1)
+                if fav_count > 50:
+                    break
+            else:
+                print("fav:False")
+        except Exception as e:
+            print(e)
+            continue
+        print("-"*30)
+
+def test_time():
+    datetime.now()
