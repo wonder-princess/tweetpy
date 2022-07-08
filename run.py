@@ -6,7 +6,7 @@ from apps.checkers import check_user_id
 print("run app")
 
 # send_dm()
-# favorite_tweet()
+favorite_tweet()
 # post_tweet()
 # reply_goodmorning()
-favorite_resume()
+# favorite_resume()

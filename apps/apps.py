@@ -2,6 +2,7 @@ import random
 import re
 import time
 from datetime import timedelta
+import tweepy
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
                            is_ng_word, is_retweet)
@@ -34,23 +35,33 @@ def send_dm():
 def favorite_tweet():
     itr = api.get_list_members(list_id=UserList.USER_LIST, count=500)
     fav_count = 0
-    for itr_ in itr, :
-        for user in itr_:
-            tweet = api.user_timeline(user_id=user.id, count=1, include_rts=False)[0]
-            print("user:", tweet.user.name)
-            print("text:\n", tweet.text)
-            print("time:", tweet.created_at + timedelta(hours=+9))
-            print("id:", tweet.id)
+    user_ids = []
+    for user in itr:
+        print(user.id)
+        user_ids.append(user.id)
+    print(user_ids)
+    for user_id in user_ids:
+        tweet = api.user_timeline(user_id=user_id, count=1, include_rts=False)[0]
+        print("user:", tweet.user.name)
+        print("text:\n", tweet.text)
+        print("time:", tweet.created_at + timedelta(hours=+9))
+        print("id:", tweet.id)
+        try:
             if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
                 fav_count += 1
                 print("fav:True")
                 print("count:", fav_count)
-                api.create_favorite(tweet.id)
-                time.sleep(1)
                 if fav_count > 50:
                     break
+                api.create_favorite(tweet.id)
+                time.sleep(1)
             else:
                 print("fav:False")
+        except Exception as e:
+                print(e)
+                print("fav:False")
+                continue
+        finally:
             print("-"*30)
 
 def ohayou():
@@ -99,21 +110,21 @@ def favorite_resume():
         print("text:\n", tweet.text)
         print("time:", tweet.created_at + timedelta(hours=+9))
         print("id:", tweet.id)
-        try:
-            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
-                fav_count += 1
-                print("fav:True")
-                print("count:", fav_count)
+
+        if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+            fav_count += 1
+            print("fav:True")
+            print("count:", fav_count)
+            try:
                 api.create_favorite(tweet.id)
                 time.sleep(1)
                 if fav_count > 50:
                     break
-            else:
+            except tweepy.TweepErrorn as e:
+                print(e)
                 print("fav:False")
-        except Exception as e:
-            print(e)
-            continue
-        print("-"*30)
-
-def test_time():
-    datetime.now()
+                continue
+            finally:
+                print("-"*30)
+        else:
+            print("fav:False")
