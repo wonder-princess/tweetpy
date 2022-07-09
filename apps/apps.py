@@ -1,11 +1,11 @@
+from distutils.command.build_scripts import first_line_re
 import random
 import re
 import time
 from datetime import timedelta
-import tweepy
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
-                           is_ng_word, is_retweet)
+                           is_ng_word, is_retweet, output_log)
 from apps.config import UserList, connect_twetter
 from apps.input_file import input_img, input_txt, input_user_list
 
@@ -23,7 +23,7 @@ def post_tweet():
                 break
             img = api.media_upload(image)
             media_ids.append(img.media_id)
-        api.update_status(status=input_txt(), media_ids=media_ids) 
+        api.update_status(status=input_txt(), media_ids=media_ids)
 
 def send_dm():
     message = input_txt()
@@ -37,29 +37,27 @@ def favorite_tweet():
     fav_count = 0
     user_ids = []
     for user in itr:
-        print(user.id)
         user_ids.append(user.id)
+    random.shuffle(user_ids)
     print(user_ids)
     for user_id in user_ids:
-        tweet = api.user_timeline(user_id=user_id, count=1, include_rts=False)[0]
-        print("user:", tweet.user.name)
-        print("text:\n", tweet.text)
-        print("time:", tweet.created_at + timedelta(hours=+9))
-        print("id:", tweet.id)
+        if fav_count > 50:
+            break
         try:
+            tweet = api.user_timeline(user_id=user_id, count=1, include_rts=False)[0]
             if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
-                fav_count += 1
-                print("fav:True")
-                print("count:", fav_count)
-                if fav_count > 50:
-                    break
+                print("fav:True [", fav_count, "]")
+                output_log(tweet)
                 api.create_favorite(tweet.id)
+                fav_count += 1
                 time.sleep(1)
             else:
                 print("fav:False")
+                output_log(tweet)
         except Exception as e:
-                print(e)
                 print("fav:False")
+                print(e)
+                output_log(tweet)
                 continue
         finally:
             print("-"*30)
@@ -78,21 +76,14 @@ def ohayou():
         return "おはようございまーーす"
 
 def reply_goodmorning():
-    # itr = api.user_timeline(user_id=check_user_id("sekai_princess"))
     itr = api.list_timeline(list_id=UserList.USER_LIST, count=5000, include_rts=False)
-
     goodmorning_tweets = []
     for tweet in itr:
         if re.match(r'.*おはよう*', tweet.text) and is_mention(tweet) and  is_ng_word(tweet):
             goodmorning_tweets.append(tweet)
-    
     for tweet in goodmorning_tweets:
-        print("user:", tweet.user.name)
-        print("text:\n", tweet.text)
-        print("time:", tweet.created_at + timedelta(hours=+9))
-        print("id:", tweet.id)
+        output_log(tweet)
         print("-"*30)
-
         reply_text = "@"+str(tweet.user.screen_name) +"\n"+ ohayou()
         api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
         time.sleep(1)
@@ -106,25 +97,23 @@ def favorite_resume():
     itr = api.search_tweets(q="#ポケカ履歴書", result_type="mixed", count=100)
     fav_count = 0
     for tweet in itr:
-        print("user:", tweet.user.name)
-        print("text:\n", tweet.text)
-        print("time:", tweet.created_at + timedelta(hours=+9))
-        print("id:", tweet.id)
-
-        if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
-            fav_count += 1
-            print("fav:True")
-            print("count:", fav_count)
-            try:
+        if fav_count > 50:
+            break
+        try:
+            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+                print("fav:True [", fav_count, "]")
+                output_log(tweet)
                 api.create_favorite(tweet.id)
+                output_log(tweet)
+                fav_count += 1
                 time.sleep(1)
-                if fav_count > 50:
-                    break
-            except tweepy.TweepErrorn as e:
-                print(e)
+            else:
                 print("fav:False")
-                continue
-            finally:
-                print("-"*30)
-        else:
+                output_log(tweet)
+        except Exception as e:
             print("fav:False")
+            print(e)
+            output_log(tweet)
+            continue
+        finally:
+            print("-"*30)

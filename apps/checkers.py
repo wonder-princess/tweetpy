@@ -1,5 +1,5 @@
 import re
-
+from datetime import timedelta
 from apps.config import connect_twetter
 
 
@@ -29,3 +29,9 @@ def is_ng_word(tweet):
         return False
     else:
         return True
+
+def output_log(tweet):
+    print("user:", tweet.user.name)
+    print("id:", tweet.id)
+    print("time:", tweet.created_at + timedelta(hours=+9))
+    print("text:\n", tweet.text)
