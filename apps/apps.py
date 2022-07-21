@@ -1,10 +1,16 @@
 from distutils.command.build_scripts import first_line_re
+from itertools import count
 import random
 import re
 import time
+import tweepy
+from tweepy.errors import (
+    BadRequest, Forbidden, HTTPException, NotFound, TooManyRequests,
+    TweepyException, TwitterServerError, Unauthorized
+)
 from datetime import timedelta
 
-from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
+from apps.lib import (check_user_id, check_user_screen_name, is_mention,
                            is_omit_word, is_retweet, output_log, shouldRun, is_omit_user)
 from apps.config import UserList, connect_twetter
 from apps.input_file import input_img, input_txt, input_sendDM_user_list
@@ -60,7 +66,18 @@ def favorite_tweet():
                     output_log(tweet)
                     time.sleep(1)
                     break
-                except Exception as e:
+                except Forbidden as e:
+                    if e.api_codes == [139]:
+                        print("fav:False")
+                        print(e)
+                        output_log(tweet)
+                        break
+                    else:
+                        print("fav:False")
+                        print(e)
+                        output_log(tweet)
+                        continue
+                except TweepyException as e:
                     print("fav:False")
                     print(e)
                     output_log(tweet)
@@ -147,12 +164,13 @@ def favorite_resume():
             else:
                 print("fav:False")
                 output_log(tweet)
-        except Exception as e:
+        except TweepyException as e:
             print("fav:False")
             print(e)
             output_log(tweet)
             continue
         finally:
             print("-"*30)
-        if fav_count >= 50:
+        if fav_count >= 100:
             break
+

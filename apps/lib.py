@@ -28,7 +28,6 @@ def is_retweet(tweet):
 def is_omit_word(tweet):
     omit_words = input_omit_words()
     for omit_word in omit_words:
-        print(str(omit_word).strip())
         if str(omit_word).strip() in tweet.text:
             return False
         else:
