@@ -5,9 +5,9 @@ import time
 from datetime import timedelta
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
-                           is_ng_word, is_retweet, output_log, shouldRun)
+                           is_omit_word, is_retweet, output_log, shouldRun, is_omit_user)
 from apps.config import UserList, connect_twetter
-from apps.input_file import input_img, input_txt, input_user_list
+from apps.input_file import input_img, input_txt, input_sendDM_user_list
 
 api = connect_twetter()
 
@@ -27,7 +27,7 @@ def post_tweet():
 
 def send_dm():
     message = input_txt()
-    itr = input_user_list()
+    itr = input_sendDM_user_list()
     print("----- 送信ユーザー -----")
     for user in itr:
         print(user, end='')
@@ -52,7 +52,7 @@ def favorite_tweet():
     for user_id in user_ids:
         tweets = api.user_timeline(user_id=user_id, count=10, include_rts=False)
         for tweet in tweets:
-            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+            if is_mention(tweet) and is_omit_word(tweet) and is_retweet(tweet):
                 try:
                     api.create_favorite(tweet.id)
                     fav_count += 1
@@ -106,8 +106,6 @@ def favorite_tweet_old():
         finally:
             print("-"*30)             
 '''
-    
-
 
 def ohayou():
     n = random.randint(1,5)
@@ -126,7 +124,7 @@ def reply_goodmorning():
     itr = api.list_timeline(list_id=UserList.USER_LIST, count=5000, include_rts=False)
     goodmorning_tweets = []
     for tweet in itr:
-        if re.match(r'.*おはよう*', tweet.text) and is_mention(tweet) and  is_ng_word(tweet):
+        if re.match(r'.*おはよう*', tweet.text) and is_mention(tweet) and  is_omit_word(tweet):
             goodmorning_tweets.append(tweet)
     for tweet in goodmorning_tweets:
         output_log(tweet)
@@ -135,23 +133,15 @@ def reply_goodmorning():
         api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
         time.sleep(1)
 
-def test_reply():
-    tweet = api.user_timeline(user_id=check_user_id("sekai_princess"))[0]
-    reply_text = "@"+str(tweet.user.screen_name) +"\n"+ input_txt()
-    api.update_status(status=reply_text, in_reply_to_status_id = tweet.id)
-
 def favorite_resume():
-    itr = api.search_tweets(q="#ポケカ履歴書", result_type="mixed", count=100)
+    itr = api.search_tweets(q="#ポケカ履歴書 -filter:retweets", result_type="recent", count=100)
     fav_count = 0
     for tweet in itr:
-        if fav_count > 50:
-            break
         try:
-            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+            if is_mention(tweet) and is_omit_word(tweet) and is_omit_user(tweet.user.screen_name):
                 api.create_favorite(tweet.id)
                 fav_count += 1
                 print("fav:True [", fav_count, "]")
-                output_log(tweet)
                 output_log(tweet)
                 time.sleep(1)
             else:
@@ -164,3 +154,5 @@ def favorite_resume():
             continue
         finally:
             print("-"*30)
+        if fav_count >= 50:
+            break

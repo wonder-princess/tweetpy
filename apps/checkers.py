@@ -1,6 +1,7 @@
 import re
 from datetime import timedelta
 from apps.config import connect_twetter
+from apps.input_file import input_omit_user_list, input_omit_words
 
 
 def check_user_id(screen_name):
@@ -24,11 +25,24 @@ def is_retweet(tweet):
     except AttributeError:
         return True
 
-def is_ng_word(tweet):
-    if re.match(r'.*質問|募|集|プレゼント|販売|企画|動画|オリパ|購入.*', tweet.text):
-        return False
-    else:
-        return True
+def is_omit_word(tweet):
+    omit_words = input_omit_words()
+    for omit_word in omit_words:
+        print(str(omit_word).strip())
+        if str(omit_word).strip() in tweet.text:
+            return False
+        else:
+            continue
+    return True
+
+def is_omit_user(name):
+    omit_users = input_omit_user_list()
+    for omit_user in omit_users:
+        if str(omit_user).strip() == name:
+            return False
+        else:
+            continue
+    return True
 
 def output_log(tweet):
     print("user:", tweet.user.name)

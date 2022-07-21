@@ -2,14 +2,30 @@ import glob
 import os
 
 
-def input_user_list():
+def input_sendDM_user_list():
     csv_file = open("apps/input/userlist.csv", "r", encoding="utf-8", errors="", newline="" )
     list = []
     for i, row in enumerate(csv_file):
         if i == 0:
             continue
-        #rowはList
-        #row[0]で必要な項目を取得することができる
+        list.append(row)
+    return list
+
+def input_omit_user_list():
+    csv_file = open("apps/input/omit_userlist.csv", "r", encoding="utf-8", errors="", newline="" )
+    list = []
+    for i, row in enumerate(csv_file):
+        if i == 0:
+            continue
+        list.append(row)
+    return list
+
+def input_omit_words():
+    csv_file = open("apps/input/omit_words.csv", "r", encoding="utf-8", errors="", newline="" )
+    list = []
+    for i, row in enumerate(csv_file):
+        if i == 0:
+            continue
         list.append(row)
     return list
 
