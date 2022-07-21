@@ -25,7 +25,7 @@ def is_retweet(tweet):
         return True
 
 def is_ng_word(tweet):
-    if re.match(r'.*質問|募|集|プレゼント|販売|企画|動画|オリパ.*', tweet.text):
+    if re.match(r'.*質問|募|集|プレゼント|販売|企画|動画|オリパ|購入.*', tweet.text):
         return False
     else:
         return True
@@ -35,3 +35,10 @@ def output_log(tweet):
     print("id:", tweet.id)
     print("time:", tweet.created_at + timedelta(hours=+9))
     print("text:\n", tweet.text)
+
+def shouldRun():
+    str = input("よろしい場合は\"y\"を押してください\n")
+    if str == "y":
+        return True
+    else:
+        return False

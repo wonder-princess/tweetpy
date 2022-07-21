@@ -5,7 +5,7 @@ import time
 from datetime import timedelta
 
 from apps.checkers import (check_user_id, check_user_screen_name, is_mention,
-                           is_ng_word, is_retweet, output_log)
+                           is_ng_word, is_retweet, output_log, shouldRun)
 from apps.config import UserList, connect_twetter
 from apps.input_file import input_img, input_txt, input_user_list
 
@@ -28,9 +28,19 @@ def post_tweet():
 def send_dm():
     message = input_txt()
     itr = input_user_list()
+    print("----- 送信ユーザー -----")
     for user in itr:
-        recipient_id = check_user_id(user)
-        api.send_direct_message(recipient_id=recipient_id, text=message)
+        print(user, end='')
+    print("----- 送信メッセージ -----")
+    print(message)
+    print("-"*30, "\n")
+    if shouldRun():
+        for user in itr:
+            recipient_id = check_user_id(user)
+            api.send_direct_message(recipient_id=recipient_id, text=message)
+        print("送信完了しました")
+    else:
+        print("送信を中断しました")
 
 def favorite_tweet():
     itr = api.get_list_members(list_id=UserList.USER_LIST, count=500)
@@ -39,7 +49,41 @@ def favorite_tweet():
     for user in itr:
         user_ids.append(user.id)
     random.shuffle(user_ids)
-    print(user_ids)
+    for user_id in user_ids:
+        tweets = api.user_timeline(user_id=user_id, count=10, include_rts=False)
+        for tweet in tweets:
+            if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+                try:
+                    api.create_favorite(tweet.id)
+                    fav_count += 1
+                    print("fav:True [", fav_count, "]")
+                    output_log(tweet)
+                    time.sleep(1)
+                    break
+                except Exception as e:
+                    print("fav:False")
+                    print(e)
+                    output_log(tweet)
+                    continue
+                finally:
+                    print("-"*30)
+            else:
+                print("fav:False")
+                output_log(tweet)
+                print("-"*30)
+        if fav_count >= 50:
+            break
+
+'''
+# 旧バージョン
+# ファボが出来なかった際、過去10ツイートさかのぼってファボ
+def favorite_tweet_old():
+    itr = api.get_list_members(list_id=UserList.USER_LIST, count=500)
+    fav_count = 1
+    user_ids = []
+    for user in itr:
+        user_ids.append(user.id)
+    random.shuffle(user_ids)
     for user_id in user_ids:
         if fav_count > 50:
             break
@@ -60,7 +104,10 @@ def favorite_tweet():
                 output_log(tweet)
                 continue
         finally:
-            print("-"*30)
+            print("-"*30)             
+'''
+    
+
 
 def ohayou():
     n = random.randint(1,5)
@@ -101,11 +148,11 @@ def favorite_resume():
             break
         try:
             if is_mention(tweet) and is_ng_word(tweet) and is_retweet(tweet):
+                api.create_favorite(tweet.id)
+                fav_count += 1
                 print("fav:True [", fav_count, "]")
                 output_log(tweet)
-                api.create_favorite(tweet.id)
                 output_log(tweet)
-                fav_count += 1
                 time.sleep(1)
             else:
                 print("fav:False")
