@@ -11,7 +11,7 @@ from tweepy.errors import (
 from datetime import timedelta
 
 from apps.lib import (check_user_id, check_user_screen_name, is_mention,
-                           is_omit_word, is_retweet, output_log, shouldRun, is_omit_user)
+                           is_omit_word, is_retweet, output_log, shouldRun, is_omit_user, create_all_userlist)
 from apps.config import UserList, connect_twetter
 from apps.input_file import input_img, input_txt, input_sendDM_user_list
 
@@ -62,23 +62,23 @@ def favorite_tweet():
                 try:
                     api.create_favorite(tweet.id)
                     fav_count += 1
-                    print("fav:True [", fav_count, "]")
+                    print("Success [", fav_count, "]")
                     output_log(tweet)
                     time.sleep(1)
                     break
                 except Forbidden as e:
                     if e.api_codes == [139]:
-                        print("fav:False")
+                        print("Failure")
                         print(e)
                         output_log(tweet)
                         break
                     else:
-                        print("fav:False")
+                        print("Failure")
                         print(e)
                         output_log(tweet)
                         continue
                 except TweepyException as e:
-                    print("fav:False")
+                    print("Failure")
                     print(e)
                     output_log(tweet)
                     continue
@@ -158,14 +158,25 @@ def favorite_resume():
             if is_mention(tweet) and is_omit_word(tweet) and is_omit_user(tweet.user.screen_name):
                 api.create_favorite(tweet.id)
                 fav_count += 1
-                print("fav:True [", fav_count, "]")
+                print("Success [", fav_count, "]")
                 output_log(tweet)
                 time.sleep(1)
             else:
                 print("fav:False")
                 output_log(tweet)
+        except Forbidden as e:
+            if e.api_codes == [139]:
+                print("Failure")
+                print(e)
+                output_log(tweet)
+                break
+            else:
+                print("Failure")
+                print(e)
+                output_log(tweet)
+                continue
         except TweepyException as e:
-            print("fav:False")
+            print("Failure")
             print(e)
             output_log(tweet)
             continue
