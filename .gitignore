@@ -1,6 +1,6 @@
 ignore
 
-apps/1__pycache__
+apps/__pycache__
 apps/test_apps.py
 apps/input/message.txt
 apps/input/sendDM_userlist.csv
