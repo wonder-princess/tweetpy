@@ -1,4 +1,3 @@
-from distutils.command.build_scripts import first_line_re
 from itertools import count
 import random
 import re
@@ -12,8 +11,8 @@ from datetime import timedelta
 
 from apps.lib import (check_user_id, check_user_screen_name, is_mention,
                            is_omit_word, is_retweet, output_log, shouldRun, is_omit_user, create_all_userlist)
-from apps.config import UserList, connect_twetter
-from apps.input_file import input_img, input_txt, input_sendDM_user_list
+from apps.config import UserList, LoginUser, connect_twetter
+from apps.input_file import input_img, input_txt, input_sendDM_user_list, input_omit_user_list, input_userlist_list
 
 api = connect_twetter()
 
@@ -185,3 +184,34 @@ def favorite_resume():
         if fav_count >= 100:
             break
 
+def test_add_to_list():
+    all_userlist = create_all_userlist(input_userlist_list())
+    itr = api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=200)
+    add_count = 0
+    for user_id in itr:
+        if not user_id in all_userlist:
+            try:
+                print("-"*30)
+                api.add_list_member(user_id=user_id, list_id=UserList.USER_LIST)
+                add_count += 1
+                print("Success [", add_count, "]")
+                print(check_user_screen_name(user_id))
+                time.sleep(1)
+            except TweepyException as e:
+                if e.api_codes == [104]:
+                    print("Failure")
+                    print(check_user_screen_name(user_id))
+                    print(e)
+                    break
+                else:
+                    print("Failure")
+                    print(check_user_screen_name(user_id))
+                    print(e)
+                    continue
+        else:
+            print("-"*30)
+            print("Failure")
+            print(check_user_screen_name(user_id))
+            print("Already added")
+        if add_count >= 50:
+            break

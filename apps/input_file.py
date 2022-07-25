@@ -1,3 +1,4 @@
+import csv
 import glob
 import os
 
@@ -28,6 +29,14 @@ def input_omit_words():
             continue
         list.append(row)
     return list
+
+def input_userlist_list():
+    csv_file = open("apps/input/userlist_list.csv", "r", encoding="utf-8", errors="", newline="" )
+    for i, row in enumerate(csv_file):
+        if i == 0:
+            continue
+        list.append(row)
+    return list    
 
 def input_img():
     strImgDirPath = "apps/input/post_img"
