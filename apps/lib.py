@@ -5,11 +5,11 @@ from apps.input_file import input_omit_user_list, input_omit_words
 
 api = connect_twetter()
 
-def check_user_id(screen_name):
+def get_user_id(screen_name):
     user_id = api.get_user(screen_name=screen_name).id
     return user_id
 
-def check_user_screen_name(user_id):
+def get_user_screen_name(user_id):
     screen_name = api.get_user(user_id=user_id).screen_name
     return screen_name
 
@@ -58,6 +58,7 @@ def shouldRun():
         return False
 
 def create_all_userlist(*userlists_ids):
+    userlists_ids = userlists_ids[0]
     all_userlist = set()
     userlists = []
     for userlist_ids in userlists_ids:

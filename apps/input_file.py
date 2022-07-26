@@ -32,9 +32,11 @@ def input_omit_words():
 
 def input_userlist_list():
     csv_file = open("apps/input/userlist_list.csv", "r", encoding="utf-8", errors="", newline="" )
+    list = []
     for i, row in enumerate(csv_file):
         if i == 0:
             continue
+        row = str(row).strip()
         list.append(row)
     return list    
 

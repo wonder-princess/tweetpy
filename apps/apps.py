@@ -9,7 +9,7 @@ from tweepy.errors import (
 )
 from datetime import timedelta
 
-from apps.lib import (check_user_id, check_user_screen_name, is_mention,
+from apps.lib import (get_user_id, get_user_screen_name, is_mention,
                            is_omit_word, is_retweet, output_log, shouldRun, is_omit_user, create_all_userlist)
 from apps.config import UserList, LoginUser, connect_twetter
 from apps.input_file import input_img, input_txt, input_sendDM_user_list, input_omit_user_list, input_userlist_list
@@ -41,7 +41,7 @@ def send_dm():
     print("-"*30, "\n")
     if shouldRun():
         for user in itr:
-            recipient_id = check_user_id(user)
+            recipient_id = get_user_id(user)
             api.send_direct_message(recipient_id=recipient_id, text=message)
         print("送信完了しました")
     else:
@@ -57,35 +57,31 @@ def favorite_tweet():
     for user_id in user_ids:
         tweets = api.user_timeline(user_id=user_id, count=10, include_rts=False)
         for tweet in tweets:
-            if is_mention(tweet) and is_omit_word(tweet) and is_retweet(tweet):
-                try:
+            try:
+                output_log(tweet)
+                if is_mention(tweet) and is_omit_word(tweet) and is_retweet(tweet):
                     api.create_favorite(tweet.id)
                     fav_count += 1
-                    print("Success [", fav_count, "]")
-                    output_log(tweet)
+                    print("【Success : ", str(fav_count).strip(), "】")
                     time.sleep(1)
                     break
-                except Forbidden as e:
-                    if e.api_codes == [139]:
-                        print("Failure")
-                        print(e)
-                        output_log(tweet)
-                        break
-                    else:
-                        print("Failure")
-                        print(e)
-                        output_log(tweet)
-                        continue
-                except TweepyException as e:
-                    print("Failure")
+                else:
+                    print("Omit tweet")
+                    print("【Failure】")
+            except Forbidden as e:
+                if e.api_codes == [139]:
                     print(e)
-                    output_log(tweet)
+                    print("【Failure】")
+                    break
+                else:
+                    print(e)
+                    print("【Failure】")
                     continue
-                finally:
-                    print("-"*30)
-            else:
-                print("fav:False")
-                output_log(tweet)
+            except TweepyException as e:
+                print(e)
+                print("【Failure】")
+                continue
+            finally:
                 print("-"*30)
         if fav_count >= 50:
             break
@@ -154,64 +150,67 @@ def favorite_resume():
     fav_count = 0
     for tweet in itr:
         try:
+            output_log(tweet)
             if is_mention(tweet) and is_omit_word(tweet) and is_omit_user(tweet.user.screen_name):
                 api.create_favorite(tweet.id)
                 fav_count += 1
-                print("Success [", fav_count, "]")
-                output_log(tweet)
+                print("【Success : ", str(fav_count).strip(), "】")
                 time.sleep(1)
             else:
-                print("fav:False")
-                output_log(tweet)
+                print("Omit tweet")
+                print("【Failure】")
         except Forbidden as e:
             if e.api_codes == [139]:
-                print("Failure")
                 print(e)
-                output_log(tweet)
+                print("【Failure】")
                 break
             else:
-                print("Failure")
                 print(e)
-                output_log(tweet)
+                print("【Failure】")
                 continue
         except TweepyException as e:
-            print("Failure")
             print(e)
-            output_log(tweet)
+            print("【Failure】")
             continue
         finally:
             print("-"*30)
         if fav_count >= 100:
             break
 
-def test_add_to_list():
+def add_to_list():
     all_userlist = create_all_userlist(input_userlist_list())
-    itr = api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=200)
+    itr = api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=300)
     add_count = 0
     for user_id in itr:
-        if not user_id in all_userlist:
-            try:
-                print("-"*30)
+        try:
+            print(get_user_screen_name(user_id))
+            if not user_id in all_userlist:
                 api.add_list_member(user_id=user_id, list_id=UserList.USER_LIST)
                 add_count += 1
-                print("Success [", add_count, "]")
-                print(check_user_screen_name(user_id))
+                print("【Success : ", str(add_count).strip(), "】")
                 time.sleep(1)
-            except TweepyException as e:
-                if e.api_codes == [104]:
-                    print("Failure")
-                    print(check_user_screen_name(user_id))
-                    print(e)
-                    break
-                else:
-                    print("Failure")
-                    print(check_user_screen_name(user_id))
-                    print(e)
-                    continue
-        else:
+            else:
+                print("Already added")
+                print("【Failure】")
+        except TweepyException as e:
+            if e.api_codes == [104]:
+                print(e)
+                print("【Failure】")
+                break
+            elif e.api_codes == [50]:
+                print("50 - User not found.")
+                print("【Failure】")
+                continue
+            elif e.api_codes == [108]:
+                print("108 - Cannot find specified user.")
+                print("【Failure】")
+                continue            
+            else:
+                print(get_user_screen_name(user_id))
+                print(e)
+                print("【Failure】")
+                continue
+        finally:
             print("-"*30)
-            print("Failure")
-            print(check_user_screen_name(user_id))
-            print("Already added")
         if add_count >= 50:
             break
