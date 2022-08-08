@@ -9,7 +9,7 @@ from tweepy.errors import (
 )
 from datetime import timedelta
 
-from apps.lib import (get_user_id, get_user_screen_name, is_mention,
+from apps.lib import (get_user_id, get_user_screen_name, get_user_name, is_mention,
                            is_omit_word, is_retweet, output_log, shouldRun, is_omit_user, create_all_userlist)
 from apps.config import UserList, LoginUser, connect_twetter
 from apps.input_file import input_img, input_txt, input_sendDM_user_list, input_omit_user_list, input_userlist_list
@@ -35,8 +35,8 @@ def send_dm():
     itr = input_sendDM_user_list()
     print("----- 送信ユーザー -----")
     for user in itr:
-        print(user, end='')
-    print("----- 送信メッセージ -----")
+        print(user, "  ", get_user_name(user), end='')
+    print("\n", "----- 送信メッセージ -----")
     print(message)
     print("-"*30, "\n")
     if shouldRun():
@@ -59,6 +59,7 @@ def favorite_tweet():
         for tweet in tweets:
             try:
                 output_log(tweet)
+                print("***")
                 if is_mention(tweet) and is_omit_word(tweet) and is_retweet(tweet):
                     api.create_favorite(tweet.id)
                     fav_count += 1
@@ -174,12 +175,12 @@ def favorite_resume():
             continue
         finally:
             print("-"*30)
-        if fav_count >= 100:
-            break
+            if fav_count >= 100:
+                break
 
 def add_to_list():
     all_userlist = create_all_userlist(input_userlist_list())
-    itr = api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=300)
+    itr = api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=700)
     add_count = 0
     for user_id in itr:
         try:
@@ -212,5 +213,5 @@ def add_to_list():
                 continue
         finally:
             print("-"*30)
-        if add_count >= 50:
-            break
+            if add_count >= 50:
+                break

@@ -13,6 +13,10 @@ def get_user_screen_name(user_id):
     screen_name = api.get_user(user_id=user_id).screen_name
     return screen_name
 
+def get_user_name(screen_name):
+    user_name = api.get_user(screen_name=screen_name).name
+    return user_name
+
 def is_mention(tweet):
     if not tweet.in_reply_to_status_id:
         return True

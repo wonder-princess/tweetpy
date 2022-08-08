@@ -4,7 +4,7 @@ import os
 
 
 def input_sendDM_user_list():
-    csv_file = open("apps/input/userlist.csv", "r", encoding="utf-8", errors="", newline="" )
+    csv_file = open("apps/input/sendDM_userlist.csv", "r", encoding="utf-8", errors="", newline="" )
     list = []
     for i, row in enumerate(csv_file):
         if i == 0:
