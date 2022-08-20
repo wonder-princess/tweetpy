@@ -1,6 +1,6 @@
 from apps.apps import (favorite_tweet, post_tweet, reply_goodmorning, send_dm,
                        favorite_resume, add_to_list)
-from apps.test_apps import get_status, test_add_to_list, test_got_favorite, test_get_user
+from apps.test_apps import get_status, test_add_to_list, test_got_favorite, test_get_user, get_user_tweet
 from apps.lib import get_user_id
 
 
@@ -15,3 +15,4 @@ send_dm()
 # get_status()
 # test_got_favorite()
 # test_get_user()
+# get_user_tweet("")
