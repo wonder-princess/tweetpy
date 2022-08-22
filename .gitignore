@@ -7,6 +7,7 @@ apps/test_apps.py
 # apps/input/omit_userlist.csv
 # apps/input/omit_words.csv
 # apps/input/userlist_list.csv
-# apps/input/post_img
-# apps/input/omit_g
+apps/input_
+apps/input
+apps/input/post_img
 apps/config.ini
