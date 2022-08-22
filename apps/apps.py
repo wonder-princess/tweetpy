@@ -35,7 +35,8 @@ def send_dm():
     itr = input_sendDM_user_list()
     print("----- 送信ユーザー -----")
     for user in itr:
-        print(user, "  ", get_user_name(user), end='')
+        
+        print(user.strip(), "  ", get_user_name(user))
     print("\n", "----- 送信メッセージ -----")
     print(message)
     print("-"*30, "\n")
