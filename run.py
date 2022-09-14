@@ -1,18 +1,15 @@
-from apps.apps import (favorite_tweet, post_tweet, reply_goodmorning, send_dm,
-                       favorite_resume, add_to_list)
-from apps.test_apps import get_status, test_add_to_list, test_got_favorite, test_get_user, get_user_tweet
-from apps.lib import get_user_id
-
+from apps.apps import Apps
+from apps.test_apps import Test_app
 
 print("run app")
 
-# favorite_tweet()
-# post_tweet()
-# reply_goodmorning()
-# favorite_resume()
-send_dm()
-# add_to_list()
-# get_status()
-# test_got_favorite()
-# test_get_user()
-# get_user_tweet("")
+app = Apps()
+# app.favorite_tweet()
+# app.post_tweet()
+# app.reply_goodmorning()
+# app.favorite_resume()
+# app.send_dm()
+app.add_to_list()
+
+# test_app = Test_app()
+# test_app.get_tweet_data("開園前からスキップする不審者と化してる")
