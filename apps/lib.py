@@ -2,6 +2,7 @@ import re
 from datetime import timedelta
 from apps.config import connect_twetter
 from apps.input_file import Input_file
+import sys
 
 class Lib:
     api = connect_twetter()
@@ -55,6 +56,8 @@ class Lib:
         print("id:", tweet.id)
         print("time:", tweet.created_at + timedelta(hours=+9))
         print("text:\n", tweet.text)
+        # log = f'user{tweet.user.name}\nid:{tweet.id}\ntime:{tweet.created_at + timedelta(hours=+9)}\n"text:{tweet.text}'
+        # print(log)
 
     def shouldRun(self):
         str = input("よろしい場合は\"y\"を押してください\n")
@@ -77,3 +80,8 @@ class Lib:
             all_userlist = all_userlist.union(userlist)
         all_userlist = list(all_userlist)
         return all_userlist
+
+    def printFuncName(self):
+        function_name = sys._getframe().f_code.co_name
+        class_name = self.__class__.__name__
+        print('{}.{}'.format(function_name, class_name))

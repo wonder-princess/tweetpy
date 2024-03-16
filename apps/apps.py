@@ -20,6 +20,8 @@ class Apps:
     lib = Lib()
     input_file = Input_file()
 
+    print("ログインユーザー :", LoginUser.SCREEN_NAME)
+
     def post_tweet(self):
         if not self.input_file.input_img():
             self.api.update_status(status=self.input_file.input_txt())
@@ -54,6 +56,7 @@ class Apps:
 
     def favorite_tweet(self):
         itr = self.api.get_list_members(list_id=UserList.USER_LIST, count=500)
+        limit = input("ふぁぼする数を入力してください\n")
         fav_count = 0
         user_ids = []
         for user in itr:
@@ -89,8 +92,50 @@ class Apps:
                     continue
                 finally:
                     print("-"*30)
-            if fav_count >= 50:
+            if fav_count >= int(limit):
                 break
+
+    def favorite_tweet_follower(self):
+        itr = self.api.get_follower_ids(user_id=LoginUser.USER_ID)
+        limit = input("ふぁぼする数を入力してください\n")
+        fav_count = 0
+        user_ids = []
+        for user_id in itr:
+            user_ids.append(user_id)
+        random.shuffle(user_ids)
+        for user_id in user_ids:
+            tweets = self.api.user_timeline(user_id=user_id, count=10, include_rts=False)
+            for tweet in tweets:
+                try:
+                    self.lib.output_log(tweet)
+                    print("***")
+                    if self.lib.is_mention(tweet) and self.lib.is_omit_word(tweet) and self.lib.is_retweet(tweet):
+                        self.api.create_favorite(tweet.id)
+                        fav_count += 1
+                        print("【Success : ", str(fav_count).strip(), "】")
+                        time.sleep(1)
+                        break
+                    else:
+                        print("Omit tweet")
+                        print("【Failure】")
+                except Forbidden as e:
+                    if e.api_codes == [139]:
+                        print(e)
+                        print("【Failure】")
+                        break
+                    else:
+                        print(e)
+                        print("【Failure】")
+                        continue
+                except TweepyException as e:
+                    print(e)
+                    print("【Failure】")
+                    continue
+                finally:
+                    print("-"*30)
+            if fav_count >= int(limit):
+                break
+            
 
     '''
     # 旧バージョン
@@ -181,7 +226,7 @@ class Apps:
 
     def add_to_list(self):
         all_userlist = self.lib.create_all_userlist(self.input_file.input_userlist_list())
-        itr = self.api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=700)
+        itr = self.api.get_friend_ids(screen_name=LoginUser.SCREEN_NAME, count=800)
         add_count = 0
         for user_id in itr:
             try:
